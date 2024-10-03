@@ -1,10 +1,10 @@
-const { Video, User } = require('../models');
+const { Thought, User } = require('../models');
 
 module.exports = {
-  async getVideos(req, res) {
+  async getThoughts(req, res) {
     try {
-      const videos = await Video.find();
-      res.json(videos);
+      const thought = await Thought.find();
+      res.json(thought);
     } catch (err) {
       res.status(500).json(err);
     }
@@ -23,27 +23,28 @@ module.exports = {
     }
   },
   // create a new video
-  async createVideo(req, res) {
+  async createThought(req, res) {
     try {
-      const video = await Video.create(req.body);
+      const thought = await Thought.create(req.body);
       const user = await User.findOneAndUpdate(
         { _id: req.body.userId },
-        { $addToSet: { videos: video._id } },
+        { $addToSet: { thoughts: thought._id } },
         { new: true }
       );
 
       if (!user) {
         return res.status(404).json({
-          message: 'Video created, but found no user with that ID',
+          message: 'Thought created, but found no user with that ID',
         });
       }
 
-      res.json('Created the video 🎉');
+      res.json('Created the thought');
     } catch (err) {
       console.log(err);
       res.status(500).json(err);
     }
   },
+
   async updateVideo(req, res) {
     try {
       const video = await Video.findOneAndUpdate(
